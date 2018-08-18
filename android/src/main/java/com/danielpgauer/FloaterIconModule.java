@@ -42,7 +42,7 @@ public class FloaterIconModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void isFloating() {
+  public void isFloating(Promise p) {
     try {
       boolean isFloating = FloatService.getService().isFloating();
       
