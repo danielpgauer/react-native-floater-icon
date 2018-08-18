@@ -1,0 +1,30 @@
+{
+  "name": "react-native-floater-icon",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:danielpgauer/react-native-floater-icon.git"
+  },
+  "keywords": [
+    "react-component",
+    "react-native",
+    "android",
+    "fs",
+    "filesystem",
+    "uri",
+    "path"
+  ],
+  "author": "Daniel Peppes Gauer <danielpgauer@gmail.com> (https://github.com/danielpgauer)",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^2.9.25"
+  },
+  "devDependencies": {
+    "react-native": "*"
+  }
+}

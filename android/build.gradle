@@ -1,0 +1,43 @@
+buildscript {
+    repositories {
+        jcenter()
+		google()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.1.0'
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.compileSdkVersion
+	buildToolsVersion rootProject.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion rootProject.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+    }
+}
+
+repositories {
+	mavenLocal()
+	mavenCentral()
+	maven {
+		url "https://jitpack.io"
+	}
+	maven {
+		url 'https://maven.google.com'
+	}
+	jcenter()
+}
+
+dependencies {
+	implementation fileTree(include: ['*.jar'], dir: 'libs')
+	implementation 'com.facebook.react:react-native:+'
+	implementation "com.android.support:support-v4:$rootProject.supportLibVersion"
+	implementation "com.android.support:appcompat-v7:$rootProject.supportLibVersion"
+}
