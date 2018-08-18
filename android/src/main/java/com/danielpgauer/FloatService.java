@@ -86,7 +86,9 @@ public class FloatService extends Service {
     public void hide() {
         if(mbound) {
             isFloating = false;
-            iconView.setVisibility(View.INVISIBLE);
+            if (iconView != null) {
+                iconView.setVisibility(View.INVISIBLE);
+            }
             callback.onShowHide(false);
         }
     }

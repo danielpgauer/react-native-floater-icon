@@ -42,6 +42,18 @@ public class FloaterIconModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void isFloating() {
+    try {
+      boolean isFloating = FloatService.getService().isFloating();
+      
+      p.resolve(isFloating);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      p.reject("ERROR", new Error(ex.getMessage()));
+    }
+  }
+
+  @ReactMethod
   public void show(Promise p) {
     try {
       FloatService.getService().show();

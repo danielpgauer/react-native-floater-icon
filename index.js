@@ -1,19 +1,25 @@
 import { NativeModules } from 'react-native';
 const { FloaterIcon } = NativeModules;
 
-export const onReady = () => {
+const onReady = () => {
 	return FloaterIcon.onReady();
 }
 
-export const onShowHide = () => {
-	return FloaterIcon.onShowHide();
-}
-
-export const show = () => {
+const show = () => {
 	return FloaterIcon.show();
 }
 
-export const hide = () => {
+const hide = () => {
 	return FloaterIcon.hide();
 }
 
+const isFloating = () => {
+	return FloaterIcon.isFloating();
+}
+
+export default {
+	onReady,
+	show,
+	hide,
+	isFloating
+}
