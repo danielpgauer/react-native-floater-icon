@@ -15,6 +15,7 @@ import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
@@ -31,7 +32,7 @@ public class FloaterIconModule extends ReactContextBaseJavaModule {
 
   @Override
   public String getName() {
-    return "FloaterIconModule";
+    return "FloaterIcon";
   }
 
   private WritableMap makeErrorPayload(Exception ex) {
@@ -41,28 +42,26 @@ public class FloaterIconModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void show(Callback callback) {
-	try {
-		FloatService.getService().show();
-		
-		callback.invoke(null, null);
-	} catch (Exception ex) {
-		ex.printStackTrace();
-		callback.invoke(makeErrorPayload(ex));
+  public void show(Promise p) {
+    try {
+      FloatService.getService().show();
+      
+      p.resolve(true);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      p.reject("ERROR", new Error(ex.getMessage()));
     }
   }
 
   @ReactMethod
-  public void hide(Callback callback) {
-    Uri uri = Uri.parse(uriString);
-    
-	try {
-		FloatService.getService().hide();
-		
-		callback.invoke(null, null);
-	} catch (Exception ex) {
-		ex.printStackTrace();
-		callback.invoke(makeErrorPayload(ex));
+  public void hide(Promise p) {
+    try {
+      FloatService.getService().hide();
+      
+      p.resolve(true);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      p.reject("ERROR", new Error(ex.getMessage()));
     }
   }
 }

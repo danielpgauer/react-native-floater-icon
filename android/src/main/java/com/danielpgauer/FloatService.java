@@ -18,6 +18,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -44,13 +45,15 @@ public class FloatService extends Service {
 
     Binder binder = new FloatBinder();
 
+    static Class mainActivity;
     static FloatService mService;
     static boolean mbound = false;
     public static boolean isFloating = false;
     static Context context;
     static IFloatService callback;
 
-    public static void create(Context context, IFloatService callback) {
+    public static void create(Class mainActivity, Context context, IFloatService callback) {
+        FloatService.mainActivity = mainActivity;
         FloatService.callback = callback;
         FloatService.context = context;
         Intent intent = new Intent(context, FloatService.class);
@@ -71,7 +74,7 @@ public class FloatService extends Service {
         if(mbound) {
             isFloating = true;
             if (iconView == null) {
-                mService.floatApp(BuildConfig.APPLICATION_ID, 0);
+                mService.floatApp(context.getPackageName());
             } else {
                 iconView.setVisibility(View.VISIBLE);
             }
@@ -159,14 +162,14 @@ public class FloatService extends Service {
         removeIconsFromScreen();
     }
 
-    private void addIconToScreen(final String packageName, int resourceId, int x, int y) {
+    private void addIconToScreen(final String packageName, int x, int y) {
         if(iconView != null) {
             return;
         }
 
         iconView = new ImageView(this);
 
-        Drawable draw = getIcon(packageName, resourceId);
+        Drawable draw = getIcon(packageName);
         iconView.setImageDrawable(draw);
 
         IconHolder iconHolder = new IconHolder(iconView, draw, packageName);
@@ -228,13 +231,7 @@ public class FloatService extends Service {
     }
 
     private void startAppActivity(String packageName) {
-        /*
-        Intent intent = packageManager.getLaunchIntentForPackage(packageName);
-            if(intent != null) {
-                    startActivity(intent);
-            }
-         */
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, mainActivity);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // You need this if starting
         //  the activity from a service
         intent.setAction(Intent.ACTION_MAIN);
@@ -263,41 +260,14 @@ public class FloatService extends Service {
         return (int) (dp * getResources().getDisplayMetrics().density + 0.5f);
     }
 
-    private Drawable getIcon(String packageName, int resourceId) {
-        Drawable icon = null;
+    private Drawable getIcon(String packageName) {
+        Log.v("AppFloat", "Using default image for icon");
 
-        if(resourceId == 0) {
-            Log.v("AppFloat", "Resource ID not found, attempting to load package icon");
-            try {
-                icon = getPackageIcon(packageName);
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Log.v("AppFloat", "Loading image using Resource ID");
-            icon = getPackageImage(packageName, resourceId);
-        }
-
-        if(icon == null) {
-            Log.v("AppFloat", "Using default image for icon");
-            icon = getResources().getDrawable(R.drawable.ic_launcher);
-        }
+        String resourceName = context.getPackageName() + ":" + "mipmap/ic_launcher";
+        int resourceId = getResources().getIdentifier(resourceName, null, null);
+        Drawable icon = ContextCompat.getDrawable(context, resourceId);
 
         return icon;
-    }
-
-    private Drawable getPackageImage(String packageName, int resourceId) {
-        return packageManager.getDrawable(packageName, resourceId, null);
-    }
-
-    private Drawable getPackageIcon(String appPackage) throws PackageManager.NameNotFoundException {
-        Drawable draw = null;
-        try {
-            draw = packageManager.getApplicationIcon(appPackage);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return draw;
     }
 
     private Drawable mergeBitmap(Drawable base, Drawable status) {
@@ -320,51 +290,8 @@ public class FloatService extends Service {
      * Public binding methods used by attached application
      */
 
-
-    public void updateIconStatus(int statusId) {
-        Drawable statusIcon;
-        IconHolder holder = (IconHolder) iconView.getTag();
-
-        Log.d("AppFloat", "updateIcon position: " + statusId);
-        switch(statusId) {
-            case 1:
-                statusIcon = getResources().getDrawable(R.drawable.one);
-                break;
-            case 2:
-                statusIcon = getResources().getDrawable(R.drawable.two);
-                break;
-            case 3:
-                statusIcon = getResources().getDrawable(R.drawable.three);
-                break;
-            case 4:
-                statusIcon =  getResources().getDrawable(R.drawable.four);
-                break;
-            case 5:
-                statusIcon = getResources().getDrawable(R.drawable.five);
-                break;
-            case 6:
-                statusIcon = getResources().getDrawable(R.drawable.six);
-                break;
-            case 7:
-                statusIcon = getResources().getDrawable(R.drawable.seven);
-                break;
-            case 8:
-                statusIcon = getResources().getDrawable(R.drawable.eight);
-                break;
-            case 9:
-                statusIcon = getResources().getDrawable(R.drawable.nine);
-                break;
-            default:
-                statusIcon = getResources().getDrawable(R.drawable.nineplus);
-        }
-
-        holder.statusId = statusId;
-        holder.statusIcon = mergeBitmap(holder.defaultIcon, statusIcon);
-        holder.view.setImageDrawable(holder.statusIcon);
-    }
-
-    public void floatApp(String packageName, int resourceId) {
-        addIconToScreen(packageName, resourceId, -1, -1);
+    public void floatApp(String packageName) {
+        addIconToScreen(packageName, -1, -1);
     }
 
 
