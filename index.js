@@ -1,8 +1,15 @@
 import { NativeModules } from 'react-native';
 const { FloaterIcon } = NativeModules;
 
+let _isReady = false;
+
 const onReady = () => {
+	_isReady = true;
 	return FloaterIcon.onReady();
+}
+
+const isReady = () => {
+	return _isReady;
 }
 
 const show = () => {
@@ -21,5 +28,6 @@ export default {
 	onReady,
 	show,
 	hide,
-	isFloating
+	isFloating,
+	isReady
 }

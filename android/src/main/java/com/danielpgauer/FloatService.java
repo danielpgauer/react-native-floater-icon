@@ -19,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.content.ContextCompat;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -267,25 +268,10 @@ public class FloatService extends Service {
 
         String resourceName = context.getPackageName() + ":" + "mipmap/ic_launcher";
         int resourceId = getResources().getIdentifier(resourceName, null, null);
-        Drawable icon = ContextCompat.getDrawable(context, resourceId);
+        Drawable icon = getResources().getDrawableForDensity(resourceId, DisplayMetrics.DENSITY_XXHIGH);
+        //ContextCompat.getDrawable(context, resourceId);
 
         return icon;
-    }
-
-    private Drawable mergeBitmap(Drawable base, Drawable status) {
-        Bitmap bitmap = Bitmap.createBitmap(base.getIntrinsicWidth(), base.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(bitmap);
-
-        int top = base.getIntrinsicHeight() - status.getIntrinsicHeight();
-
-        base.setBounds(0, 0, base.getIntrinsicWidth(), base.getIntrinsicHeight());
-        status.setBounds(0, 70, 30, 100);
-
-        base.draw(c);
-        status.draw(c);
-
-        Drawable draw = new BitmapDrawable(getResources(), bitmap);
-        return draw;
     }
 
     /*
@@ -293,7 +279,14 @@ public class FloatService extends Service {
      */
 
     public void floatApp(String packageName) {
-        addIconToScreen(packageName, -1, -1);
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics metrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(metrics);
+        addIconToScreen(
+                packageName,
+                metrics.widthPixels  - dpToPx(50),
+                dpToPx(70)
+        );
     }
 
 
