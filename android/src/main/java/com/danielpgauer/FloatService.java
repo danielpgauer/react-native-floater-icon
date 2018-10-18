@@ -95,14 +95,19 @@ public class FloatService extends Service {
     }
 
     public void unbind() {
+        removeIconsFromScreen();
         context.unbindService(mConnection);
+        try {
+            stopSelf();
+        } catch (Exception ex) {
+        }
         mbound = false;
     }
 
     private static ServiceConnection mConnection =  new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.d("AppFloater", "Connected to service");
+            Log.d("FloaterIconer", "Connected to service");
             mService = ((FloatService.FloatBinder) service).getService();
             mbound = true;
             callback.created(mService);
@@ -111,7 +116,7 @@ public class FloatService extends Service {
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            Log.d("AppFloat", "Disconnected from service");
+            Log.d("FloaterIcon", "Disconnected from service");
             mbound = false;
         }
     };
@@ -155,13 +160,13 @@ public class FloatService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("AppFloat", "Service started with null intent");
+        Log.d("FloaterIcon", "Service started with null intent");
         return START_STICKY;
     }
 
     @Override
     public void onTaskRemoved (Intent rootIntent) {
-        Log.d("AppFloat", "onTaskRemoved");
+        Log.d("FloaterIcon", "onTaskRemoved");
         removeIconsFromScreen();
     }
 
@@ -198,33 +203,33 @@ public class FloatService extends Service {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        Log.d("AppFloat", "Action Down");
+                        Log.d("FloaterIcon", "Action Down");
                         initialX = paramsF.x;
                         initialY = paramsF.y;
                         initialTouchX = event.getRawX();
                         initialTouchY = event.getRawY();
                         return false;
                     case MotionEvent.ACTION_MOVE:
-                        Log.d("AppFloat", "Action Move");
+                        Log.d("FloaterIcon", "Action Move");
                         paramsF.x = initialX + (int) (event.getRawX() - initialTouchX);
                         paramsF.y = initialY + (int) (event.getRawY() - initialTouchY);
                         windowManager.updateViewLayout(iconView, paramsF);
                         return false;
                     case MotionEvent.ACTION_UP:
-                        Log.d("AppFloat", "Action Up");
-                        Log.d("AppFloat", "DistanceX: " + Math.abs(initialTouchX - event.getRawX()));
-                        Log.d("AppFloat", "DistanceY: " + Math.abs(initialTouchY - event.getRawY()));
-                        Log.d("AppFloat", "elapsed gesture time: " + (event.getEventTime() - event.getDownTime()));
+                        Log.d("FloaterIcon", "Action Up");
+                        Log.d("FloaterIcon", "DistanceX: " + Math.abs(initialTouchX - event.getRawX()));
+                        Log.d("FloaterIcon", "DistanceY: " + Math.abs(initialTouchY - event.getRawY()));
+                        Log.d("FloaterIcon", "elapsed gesture time: " + (event.getEventTime() - event.getDownTime()));
                         if((Math.abs(initialTouchX - event.getRawX()) <= mScaledTouchSlop) && (Math.abs(initialTouchY - event.getRawY()) <= mScaledTouchSlop)) {
                             if((event.getEventTime() - event.getDownTime()) < mTapTimeOut ) {
-                                Log.d("AppFloat", "Click Detected");
+                                Log.d("FloaterIcon", "Click Detected");
                                 startAppActivity(packageName);
                             } else if((event.getEventTime() - event.getDownTime()) >= mLongPressTimeOut) {
-                                Log.d("AppFloat", "Long Click Detected");
+                                Log.d("FloaterIcon", "Long Click Detected");
                             }
                         }
                     default:
-                        Log.d("AppFloat", "Action Default");
+                        Log.d("FloaterIcon", "Action Default");
                         break;
                 }
                 return false;
@@ -264,7 +269,7 @@ public class FloatService extends Service {
     }
 
     private Drawable getIcon(String packageName) {
-        Log.v("AppFloat", "Using default image for icon");
+        Log.v("FloaterIcon", "Using default image for icon");
 
         String resourceName = context.getPackageName() + ":" + "mipmap/ic_launcher";
         int resourceId = getResources().getIdentifier(resourceName, null, null);
@@ -285,7 +290,7 @@ public class FloatService extends Service {
         addIconToScreen(
                 packageName,
                 metrics.widthPixels  - dpToPx(50),
-                dpToPx(70)
+                dpToPx(100)
         );
     }
 
@@ -300,7 +305,7 @@ public class FloatService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.v("AppFloat", "destroy svc");
+        Log.v("FloaterIcon", "destroy svc");
         super.onDestroy();
     }
 }
