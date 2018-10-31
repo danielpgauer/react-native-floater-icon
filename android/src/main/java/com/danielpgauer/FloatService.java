@@ -54,6 +54,10 @@ public class FloatService extends Service {
     static IFloatService callback;
 
     public static void create(Class mainActivity, Context context, IFloatService callback) {
+        if (FloatService.mainActivity != null) {
+            return;
+        }
+
         FloatService.mainActivity = mainActivity;
         FloatService.callback = callback;
         FloatService.context = context;

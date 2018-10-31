@@ -20,6 +20,10 @@ const hide = () => {
 	return FloaterIcon.hide();
 }
 
+const stop = () => {
+	return FloaterIcon.stop();
+}
+
 const isFloating = () => {
 	return FloaterIcon.isFloating();
 }
@@ -28,6 +32,7 @@ export default {
 	onReady,
 	show,
 	hide,
+	stop,
 	isFloating,
 	isReady
 }

@@ -76,4 +76,16 @@ public class FloaterIconModule extends ReactContextBaseJavaModule {
       p.reject("ERROR", new Error(ex.getMessage()));
     }
   }
+
+  @ReactMethod
+  public void stop(Promise p) {
+    try {
+      FloatService.getService().unbind();
+      
+      p.resolve(true);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      p.reject("ERROR", new Error(ex.getMessage()));
+    }
+  }
 }
