@@ -20,6 +20,10 @@ const hide = () => {
 	return FloaterIcon.hide();
 }
 
+const start = () => {
+	return FloaterIcon.start();
+}
+
 const stop = () => {
 	return FloaterIcon.stop();
 }

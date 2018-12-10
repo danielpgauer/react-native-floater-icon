@@ -54,9 +54,21 @@ public class FloatService extends Service {
     static IFloatService callback;
 
     public static void create(Class mainActivity, Context context, IFloatService callback) {
-        if (FloatService.mainActivity != null) {
-            return;
+        if (mService != null) {
+            Log.d("FloaterIcon", "Already exists");
+            //mService.unbind();
+            try {
+                context.unbindService(mConnection);
+            } catch (Exception ex) {
+            }
+
+            try {
+                mService.stopSelf();
+            } catch (Exception ex) {
+            }
         }
+
+        Log.d("FloaterIcon", "Create service");
 
         FloatService.mainActivity = mainActivity;
         FloatService.callback = callback;
@@ -99,6 +111,7 @@ public class FloatService extends Service {
     }
 
     public void unbind() {
+        Log.d("FloaterIconer", "Unbinding");
         removeIconsFromScreen();
         context.unbindService(mConnection);
         try {
@@ -111,7 +124,7 @@ public class FloatService extends Service {
     private static ServiceConnection mConnection =  new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            Log.d("FloaterIconer", "Connected to service");
+            Log.d("FloaterIcon", "Connected to service");
             mService = ((FloatService.FloatBinder) service).getService();
             mbound = true;
             callback.created(mService);
