@@ -5,6 +5,7 @@ declare module "react-native-floater-icon" {
     static isFloating(): Promise<boolean>;
     static show(): Promise<boolean>;
     static hide(): Promise<boolean>;
+    static isStarted(): Promise<boolean>;
     static start(): Promise<boolean>;
     static stop(): Promise<boolean>;
   }

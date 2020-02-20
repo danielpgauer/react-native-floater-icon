@@ -20,6 +20,10 @@ const hide = () => {
 	return FloaterIcon.hide();
 }
 
+const isStarted = () => {
+	return FloaterIcon.isStarted();
+}
+
 const start = () => {
 	return FloaterIcon.start();
 }
@@ -36,6 +40,8 @@ export default {
 	onReady,
 	show,
 	hide,
+	start,
+	isStarted,
 	stop,
 	isFloating,
 	isReady

@@ -52,12 +52,12 @@ public class FloaterIconModule extends ReactContextBaseJavaModule
   }
 
   @ReactMethod
-  public void start(final Promise p) {
-    if (floatService != null) {
-      //p.reject("ERROR", new Error("FloaterIcon already started"));
-      //return;
-    }
+  public void isStarted(final Promise p) {
+    p.resolve(floatService != null);
+  }
 
+  @ReactMethod
+  public void start(final Promise p) {
     try {
       Activity currentActivity = getCurrentActivity();
       if (currentActivity == null) {
@@ -86,13 +86,13 @@ public class FloaterIconModule extends ReactContextBaseJavaModule
   public void stop(Promise p) {
     try {
       FloatService.getService().unbind();
-
-      floatService = null;
       
       p.resolve(true);
     } catch (Exception ex) {
       ex.printStackTrace();
       p.reject("ERROR", new Error(ex.getMessage()));
+    } finally {
+      floatService = null;
     }
   }
 
